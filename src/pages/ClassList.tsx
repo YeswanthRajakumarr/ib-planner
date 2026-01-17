@@ -180,6 +180,22 @@ const ClassList = () => {
           </div>
         </section>
 
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-lg font-bold text-foreground">Active Classes</h2>
+            <p className="text-sm text-muted-foreground">Showing {filteredClasses.length} class{filteredClasses.length !== 1 ? 'es' : ''}</p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-full shadow-sm border-primary/20 hover:bg-primary/5 h-8 text-[11px] font-bold uppercase tracking-wider"
+            onClick={() => navigate("/calendar")}
+          >
+            <Calendar className="w-3.5 h-3.5 mr-2" />
+            Full Calendar
+          </Button>
+        </div>
+
         {/* Search and Filters Bar */}
         <div className="flex flex-col md:flex-row gap-3 mb-6 items-start md:items-center animate-in fade-in slide-in-from-top-4 duration-500">
           <div className="relative flex-1 w-full">
@@ -263,21 +279,7 @@ const ClassList = () => {
           </div>
         </div>
 
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-lg font-bold text-foreground">Active Classes</h2>
-            <p className="text-sm text-muted-foreground">Showing {filteredClasses.length} class{filteredClasses.length !== 1 ? 'es' : ''}</p>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            className="rounded-full shadow-sm border-primary/20 hover:bg-primary/5 h-8 text-[11px] font-bold uppercase tracking-wider"
-            onClick={() => navigate("/calendar")}
-          >
-            <Calendar className="w-3.5 h-3.5 mr-2" />
-            Full Calendar
-          </Button>
-        </div>
+
 
         {/* Card View - Horizontal scroll */}
         {viewMode === "card" && (
