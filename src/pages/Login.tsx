@@ -66,8 +66,8 @@ const Login = () => {
         <div className="w-full max-w-[360px] relative z-10 animate-in fade-in slide-in-from-right-8 duration-1000">
           {/* Mobile Branding (Visible only on small screens) or School Logo for Context */}
           <div className="text-center mb-6">
-            <div className="inline-flex items-center justify-center mb-4">
-              <img src="/school_full_logo.png" alt="Hillridge Logo" className="h-32 w-auto object-contain rounded-3xl" loading="lazy" />
+            <div className="inline-flex items-center justify-center mb-4 rounded-3xl overflow-hidden">
+              <img src="/school_full_logo.png" alt="Hillridge Logo" className="h-32 w-auto object-contain" loading="lazy" />
             </div>
             <h2 className="text-xl font-black tracking-tight text-foreground mb-1 font-heading">
               Institutional Access
