@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { LogOut, Home, Bell, Settings } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { setAuthenticated } from "@/lib/demoStorage";
 
 export const AppHeader = () => {
   const navigate = useNavigate();
@@ -103,6 +104,7 @@ export const AppHeader = () => {
               size="icon"
               onClick={(e) => {
                 e.stopPropagation();
+                setAuthenticated(false);
                 navigate("/");
               }}
               className="text-muted-foreground hover:text-destructive hover:bg-destructive/5 rounded-full h-9 w-9"
