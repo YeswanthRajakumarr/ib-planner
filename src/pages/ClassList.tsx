@@ -291,43 +291,43 @@ const ClassList = () => {
             >
               <div className="flex gap-4 w-max p-1">
                 {filteredClasses.map((classItem) => (
-                  <Card key={classItem.id} className="group border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 flex flex-col overflow-hidden w-[340px] flex-shrink-0 rounded-2xl">
-                    <CardHeader className="pb-3 pt-5 px-5 bg-muted/10 border-b border-border/50">
+                  <Card key={classItem.id} className="group border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 flex flex-col overflow-hidden w-[300px] sm:w-[340px] flex-shrink-0 rounded-2xl">
+                    <CardHeader className="pb-2 pt-4 px-4 sm:pb-3 sm:pt-5 sm:px-5 bg-muted/10 border-b border-border/50">
                       <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 bg-background rounded-2xl flex items-center justify-center border border-border shadow-sm group-hover:bg-primary/5 group-hover:border-primary/20 transition-colors">
-                            <Users className="w-5 h-5 text-primary" />
+                        <div className="flex items-center gap-3 sm:gap-4">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-background rounded-2xl flex items-center justify-center border border-border shadow-sm group-hover:bg-primary/5 group-hover:border-primary/20 transition-colors">
+                            <Users className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                           </div>
                           <div>
-                            <CardTitle className="text-base font-bold text-foreground">{classItem.name}</CardTitle>
-                            <CardDescription className="text-xs font-medium">{classItem.studentCount} Students • {classItem.subjects.length} Subjects</CardDescription>
+                            <CardTitle className="text-sm sm:text-base font-bold text-foreground">{classItem.name}</CardTitle>
+                            <CardDescription className="text-[10px] sm:text-xs font-medium">{classItem.studentCount} Students • {classItem.subjects.length} Subjects</CardDescription>
                           </div>
                         </div>
-                        <Badge variant="secondary" className="text-[10px] font-black tracking-widest uppercase py-0.5 px-2 bg-primary/5 text-primary border-primary/10">
+                        <Badge variant="secondary" className="text-[9px] font-black tracking-widest uppercase py-0.5 px-2 bg-primary/5 text-primary border-primary/10">
                           {classItem.grade}
                         </Badge>
                       </div>
                     </CardHeader>
-                    <CardContent className="py-4 px-5 flex-grow bg-card/30">
-                      <div className="space-y-4">
+                    <CardContent className="py-3 px-4 sm:py-4 sm:px-5 flex-grow bg-card/30">
+                      <div className="space-y-3 sm:space-y-4">
                         {classItem.subjects.map((subject) => (
                           <div key={subject.id} className="relative group/subject">
-                            <div className="flex justify-between items-center mb-2">
+                            <div className="flex justify-between items-center mb-1.5 sm:mb-2">
                               <div className="flex items-center gap-2">
-                                <div className="w-1 h-4 bg-primary/20 rounded-full group-hover/subject:bg-primary transition-colors" />
-                                <span className="font-bold text-sm text-foreground/90">{subject.name}</span>
+                                <div className="w-1 h-3.5 sm:w-1 sm:h-4 bg-primary/20 rounded-full group-hover/subject:bg-primary transition-colors" />
+                                <span className="font-bold text-xs sm:text-sm text-foreground/90">{subject.name}</span>
                               </div>
                               {getStatusBadge(subject.planStatus, subject.hasActivePlan)}
                             </div>
 
                             {subject.hasActivePlan ? (
-                              <div className="space-y-2 pl-3">
-                                <div className="flex justify-between text-[10px] font-black text-muted-foreground uppercase tracking-wider">
+                              <div className="space-y-1.5 sm:space-y-2 pl-3">
+                                <div className="flex justify-between text-[9px] sm:text-[10px] font-black text-muted-foreground uppercase tracking-wider">
                                   <span>Planning Status</span>
                                   <span className="text-primary">{subject.completionPercentage}%</span>
                                 </div>
-                                <Progress value={subject.completionPercentage} className="h-1.5 bg-muted/50" />
-                                <div className="flex gap-2 pt-1 opacity-0 group-hover/subject:opacity-100 transition-all transform translate-y-1 group-hover/subject:translate-y-0">
+                                <Progress value={subject.completionPercentage} className="h-1 sm:h-1.5 bg-muted/50" />
+                                <div className="flex gap-2 pt-1 opacity-100 sm:opacity-0 group-hover/subject:opacity-100 transition-all transform sm:translate-y-1 group-hover/subject:translate-y-0">
                                   <Button
                                     variant="secondary"
                                     size="sm"
@@ -349,8 +349,8 @@ const ClassList = () => {
                                 </div>
                               </div>
                             ) : (
-                              <div className="ml-3 bg-muted/20 border border-dashed border-border/60 rounded-xl p-3 text-center group-hover/subject:border-primary/30 group-hover/subject:bg-primary/[0.02] transition-all">
-                                <p className="text-[10px] text-muted-foreground mb-2 font-black uppercase tracking-widest">Awaiting Plan</p>
+                              <div className="ml-3 bg-muted/20 border border-dashed border-border/60 rounded-xl p-2 sm:p-3 text-center group-hover/subject:border-primary/30 group-hover/subject:bg-primary/[0.02] transition-all">
+                                <p className="text-[10px] text-muted-foreground mb-1.5 sm:mb-2 font-black uppercase tracking-widest">Awaiting Plan</p>
                                 <Button
                                   size="sm"
                                   variant="default"
@@ -366,8 +366,8 @@ const ClassList = () => {
                         ))}
                       </div>
                     </CardContent>
-                    <CardFooter className="pt-0 pb-4 px-5">
-                      <Button variant="ghost" className="w-full justify-between text-[11px] font-black uppercase tracking-[0.15em] text-primary group-hover:bg-primary/5 rounded-xl px-4 py-2 hover:translate-x-1 transition-all">
+                    <CardFooter className="pt-0 pb-3 px-4 sm:pb-4 sm:px-5">
+                      <Button variant="ghost" className="w-full justify-between text-[10px] sm:text-[11px] font-black uppercase tracking-[0.15em] text-primary group-hover:bg-primary/5 rounded-xl px-4 py-2 hover:translate-x-1 transition-all">
                         Full Class Insight
                         <ArrowRight className="w-4 h-4" />
                       </Button>
