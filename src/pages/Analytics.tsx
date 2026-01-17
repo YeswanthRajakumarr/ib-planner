@@ -95,9 +95,9 @@ const Analytics = () => {
 
                     <div className="flex items-center gap-2">
                         <Select value={gradeFilter} onValueChange={setGradeFilter}>
-                            <SelectTrigger className="w-[140px] h-10 rounded-xl border-border/50 bg-card/50 shadow-sm transition-all focus:ring-primary/20 text-xs font-bold uppercase tracking-wider">
+                            <SelectTrigger className="w-[140px] h-10 rounded-xl border-border/50 bg-card/50 shadow-sm transition-all focus:ring-primary/20 text-sm font-medium">
                                 <div className="flex items-center gap-2">
-                                    <Filter className="w-3.5 h-3.5 text-primary" />
+                                    <Filter className="w-3.5 h-3.5 text-muted-foreground" />
                                     <SelectValue placeholder="All Grades" />
                                 </div>
                             </SelectTrigger>
