@@ -23,7 +23,7 @@ import {
     ChevronDown,
     SortAsc
 } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
     Select,
     SelectContent,
@@ -84,11 +84,14 @@ const Curriculum = () => {
             return 0;
         });
 
-        // Reset to first page when filtering/searching
-        setCurrentPage(1);
-
         return result;
     }, [allSubjects, search, gradeFilter, statusFilter, sortBy]);
+
+    // Reset to first page when filtering/searching
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [search, gradeFilter, statusFilter, sortBy]);
+
 
     const totalPages = Math.ceil(filteredSubjects.length / ITEMS_PER_PAGE);
     const paginatedSubjects = useMemo(() => {
