@@ -70,7 +70,7 @@ const NotFound = () => {
 
           <div className="mt-12 pt-8 border-t border-border/10">
             <div className="inline-flex items-center justify-center mb-4">
-              <img src="/school_logo.png" alt="Logo" className="h-10 w-auto opacity-50" />
+              <img src="/school_logo.png" alt="Logo" className="h-10 w-auto opacity-50 rounded-xl" />
             </div>
             <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/30">
               Academic Support Engineering

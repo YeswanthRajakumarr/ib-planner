@@ -42,7 +42,7 @@ export const AppHeader = () => {
               <SheetContent side="left" className="w-[280px] sm:w-[320px] rounded-r-3xl border-r-border/50 bg-background/95 backdrop-blur-xl p-0">
                 <SheetHeader className="p-6 border-b border-border/50">
                   <SheetTitle className="flex items-center gap-3">
-                    <img src="/school_logo.png" alt="Logo" className="h-10 w-auto" />
+                    <img src="/school_logo.png" alt="Logo" className="h-10 w-auto rounded-xl" />
                     <div className="text-left">
                       <p className="text-xs font-black tracking-tight text-primary uppercase leading-tight">The Hillridge International School</p>
                       <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">IB Academic Planner</p>
@@ -98,7 +98,7 @@ export const AppHeader = () => {
             onClick={() => navigate("/classes")}
           >
             <div>
-              <img src="/school_logo.png" alt="school logo" className="h-12 w-auto object-contain" loading="lazy" />
+              <img src="/school_logo.png" alt="school logo" className="h-12 w-auto object-contain rounded-xl" loading="lazy" />
             </div>
             <div className="hidden sm:block">
               <h1 className="font-bold text-foreground text-base tracking-tight leading-tight">
