@@ -30,6 +30,7 @@ const Login = () => {
           src="/planning.jpg"
           alt="Planning"
           className="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
         />
         {/* Modern Overlay with Blur & Gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/40 to-transparent backdrop-blur-[1px]" />
@@ -64,7 +65,7 @@ const Login = () => {
           {/* Mobile Branding (Visible only on small screens) or School Logo for Context */}
           <div className="text-center mb-6">
             <div className="inline-flex items-center justify-center mb-4">
-              <img src="/school_full_logo.png" alt="Hillridge Logo" className="h-32 w-auto object-contain" />
+              <img src="/school_full_logo.png" alt="Hillridge Logo" className="h-32 w-auto object-contain" loading="lazy" />
             </div>
             <h2 className="text-xl font-black tracking-tight text-foreground mb-1 font-heading">
               Institutional Access

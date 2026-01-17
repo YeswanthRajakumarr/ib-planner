@@ -21,7 +21,7 @@ export const AppHeader = () => {
             onClick={() => navigate("/classes")}
           >
             <div>
-              <img src="/school_logo.png" alt="school logo" className="h-12 w-auto object-contain" />
+              <img src="/school_logo.png" alt="school logo" className="h-12 w-auto object-contain" loading="lazy" />
             </div>
             <div className="hidden sm:block">
               <h1 className="font-bold text-foreground text-base tracking-tight leading-tight">
