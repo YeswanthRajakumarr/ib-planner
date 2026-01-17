@@ -117,7 +117,7 @@ const ClassList = () => {
       return (
         <Badge
           variant="outline"
-          className="text-[10px] font-bold uppercase border-dashed border-muted-foreground/30 text-muted-foreground/50 px-2 py-0.5"
+          className="text-[10px] font-bold uppercase border-dashed border-muted-foreground/30 text-muted-foreground/50 px-2 py-0.5 whitespace-nowrap"
         >
           Not Started
         </Badge>
