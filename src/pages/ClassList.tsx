@@ -384,20 +384,20 @@ const ClassList = () => {
           <div className="space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
             {filteredClasses.map((classItem) => (
               <Card key={classItem.id} className="group border-border/50 hover:border-primary/30 hover:shadow-md transition-all rounded-2xl overflow-hidden bg-card/50 backdrop-blur-sm">
-                <div className="flex items-center gap-2 md:gap-4 p-3 md:p-4">
-                  <div className="w-10 h-10 md:w-12 md:h-12 bg-muted/20 rounded-2xl flex items-center justify-center border border-border group-hover:bg-primary/5 group-hover:border-primary/20 transition-colors">
+                <div className="flex items-center gap-3 md:gap-4 p-3.5 md:p-4">
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-muted/20 rounded-2xl flex items-center justify-center border border-border group-hover:bg-primary/5 group-hover:border-primary/20 transition-colors flex-shrink-0">
                     <Users className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 md:gap-3 mb-0.5 md:mb-1">
+                    <div className="flex items-center gap-2 md:gap-3 mb-1">
                       <h3 className="font-bold text-sm md:text-base text-foreground truncate">{classItem.name}</h3>
-                      <Badge variant="secondary" className="text-[9px] font-black tracking-widest uppercase py-0.5 px-2 bg-primary/5 text-primary">
+                      <Badge variant="secondary" className="text-[9px] font-black tracking-widest uppercase py-0.5 px-2 bg-primary/5 text-primary flex-shrink-0">
                         {classItem.grade}
                       </Badge>
                     </div>
                     <p className="text-[10px] md:text-xs font-medium text-muted-foreground">{classItem.studentCount} Students • {classItem.subjects.length} Subjects</p>
                   </div>
-                  <div className="flex items-center gap-1 md:gap-2 flex-wrap justify-end">
+                  <div className="hidden sm:flex items-center gap-2 flex-wrap justify-end max-w-[200px]">
                     {classItem.subjects.slice(0, 2).map((s) => (
                       <Badge
                         key={s.id}
@@ -411,11 +411,11 @@ const ClassList = () => {
                       <Badge variant="outline" className="text-[9px] font-bold">+{classItem.subjects.length - 2}</Badge>
                     )}
                   </div>
-                  <div className="h-8 w-[1px] bg-border/30 mx-1 md:mx-2" />
+                  <div className="h-8 w-[1px] bg-border/20 mx-1 md:mx-2 flex-shrink-0" />
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-xl w-8 h-8 md:w-10 md:h-10 hover:bg-primary/5 hover:text-primary transition-all active:scale-95"
+                    className="rounded-xl w-9 h-9 md:w-10 md:h-10 hover:bg-primary/5 hover:text-primary transition-all active:scale-95 flex-shrink-0"
                     onClick={() => handleEditPlan(classItem.id, classItem.subjects[0].id)}
                   >
                     <ArrowRight className="w-5 h-5" />
