@@ -46,6 +46,9 @@ const Curriculum = () => {
     const [gradeFilter, setGradeFilter] = useState("all");
     const [statusFilter, setStatusFilter] = useState("all");
     const [sortBy, setSortBy] = useState("name-asc");
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
+
     const classes = getClasses();
 
     // Flatten all subjects into a single list
@@ -81,8 +84,17 @@ const Curriculum = () => {
             return 0;
         });
 
+        // Reset to first page when filtering/searching
+        setCurrentPage(1);
+
         return result;
     }, [allSubjects, search, gradeFilter, statusFilter, sortBy]);
+
+    const totalPages = Math.ceil(filteredSubjects.length / ITEMS_PER_PAGE);
+    const paginatedSubjects = useMemo(() => {
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        return filteredSubjects.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    }, [filteredSubjects, currentPage]);
 
     const grades = useMemo(() => Array.from(new Set(allSubjects.map(s => s.grade))).sort(), [allSubjects]);
 
@@ -176,7 +188,7 @@ const Curriculum = () => {
                     </div>
                 </div>
 
-                <div className="bg-card/50 backdrop-blur-xl border border-border/50 rounded-2xl overflow-hidden shadow-lg">
+                <div className="bg-card/50 backdrop-blur-xl border border-border/50 rounded-2xl overflow-hidden shadow-lg mb-6">
                     <Table>
                         <TableHeader className="bg-muted/30">
                             <TableRow className="hover:bg-transparent border-none">
@@ -188,8 +200,8 @@ const Curriculum = () => {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {filteredSubjects.length > 0 ? (
-                                filteredSubjects.map((sub, idx) => (
+                            {paginatedSubjects.length > 0 ? (
+                                paginatedSubjects.map((sub, idx) => (
                                     <TableRow key={`${sub.id}-${idx}`} className="group hover:bg-muted/20 border-border/30 transition-colors">
                                         <TableCell className="py-2.5 px-4">
                                             <div className="flex items-center gap-3">
@@ -248,6 +260,48 @@ const Curriculum = () => {
                         </TableBody>
                     </Table>
                 </div>
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                    <div className="flex items-center justify-between px-2 py-4">
+                        <div className="text-sm text-muted-foreground">
+                            Showing <span className="font-medium text-foreground">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</span> to <span className="font-medium text-foreground">{Math.min(currentPage * ITEMS_PER_PAGE, filteredSubjects.length)}</span> of <span className="font-medium text-foreground">{filteredSubjects.length}</span> items
+                        </div>
+                        <div className="flex items-center gap-1">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-8 rounded-lg border-border/50 bg-card shadow-sm px-3"
+                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                disabled={currentPage === 1}
+                            >
+                                Previous
+                            </Button>
+                            <div className="flex items-center gap-1 mx-2">
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                                    <Button
+                                        key={page}
+                                        variant={currentPage === page ? "default" : "ghost"}
+                                        size="icon"
+                                        className={`w-8 h-8 rounded-lg ${currentPage === page ? "shadow-md" : "hover:bg-primary/10"}`}
+                                        onClick={() => setCurrentPage(page)}
+                                    >
+                                        <span className="text-xs font-bold">{page}</span>
+                                    </Button>
+                                ))}
+                            </div>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-8 rounded-lg border-border/50 bg-card shadow-sm px-3"
+                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                disabled={currentPage === totalPages}
+                            >
+                                Next
+                            </Button>
+                        </div>
+                    </div>
+                )}
             </main>
         </div>
     );
