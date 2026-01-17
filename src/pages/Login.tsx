@@ -67,7 +67,7 @@ const Login = () => {
           {/* Mobile Branding (Visible only on small screens) or School Logo for Context */}
           <div className="text-center mb-6">
             <div className="inline-flex items-center justify-center mb-4">
-              <img src="/school_full_logo.png" alt="Hillridge Logo" className="h-32 w-auto object-contain rounded-xl" loading="lazy" />
+              <img src="/school_full_logo.png" alt="Hillridge Logo" className="h-32 w-auto object-contain rounded-3xl" loading="lazy" />
             </div>
             <h2 className="text-xl font-black tracking-tight text-foreground mb-1 font-heading">
               Institutional Access
