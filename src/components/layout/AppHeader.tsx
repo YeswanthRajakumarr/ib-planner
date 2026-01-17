@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, Home, Bell, Settings, Menu, BookOpen, BarChart3, Calendar as CalendarIcon } from "lucide-react";
+import { LogOut, Home, Bell, Menu, BookOpen, BarChart3, Calendar as CalendarIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { setAuthenticated } from "@/lib/demoStorage";
@@ -55,8 +55,8 @@ export const AppHeader = () => {
                       key={item.name}
                       variant={item.active ? "secondary" : "ghost"}
                       className={`w-full justify-start h-12 rounded-2xl px-4 gap-3 ${item.active
-                          ? "bg-primary/10 text-primary shadow-none font-bold"
-                          : "text-muted-foreground hover:bg-muted/50 font-medium"
+                        ? "bg-primary/10 text-primary shadow-none font-bold"
+                        : "text-muted-foreground hover:bg-muted/50 font-medium"
                         }`}
                       onClick={() => {
                         navigate(item.path);
@@ -152,14 +152,6 @@ export const AppHeader = () => {
             <ThemeToggle />
             <Button variant="ghost" size="icon" className="text-muted-foreground rounded-full h-9 w-9">
               <Bell className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate("/profile")}
-              className="text-muted-foreground rounded-full h-9 w-9"
-            >
-              <Settings className="w-4 h-4" />
             </Button>
           </div>
 
