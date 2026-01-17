@@ -128,13 +128,15 @@ const Login = () => {
                 </Button>
               </form>
 
-              <div className="mt-6 pt-5 border-t border-border/10">
-                <p className="text-[9px] font-bold text-center uppercase tracking-[0.3em] text-muted-foreground/40">
-                  Powered by GameUp Technologies
-                </p>
-              </div>
+
             </CardContent>
           </Card>
+        </div>
+
+        <div className="absolute bottom-6 left-0 right-0 text-center">
+          <p className="text-[9px] font-bold text-center uppercase tracking-[0.3em] text-muted-foreground/40">
+            Powered by GameUp Technologies
+          </p>
         </div>
       </div>
     </div>
