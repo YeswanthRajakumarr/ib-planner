@@ -44,8 +44,8 @@ export const AppHeader = () => {
                   <SheetTitle className="flex items-center gap-3">
                     <img src="/school_logo.png" alt="Logo" className="h-10 w-auto" />
                     <div className="text-left">
-                      <p className="text-xs font-black tracking-widest text-primary uppercase leading-tight">Hillridge</p>
-                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Planner</p>
+                      <p className="text-xs font-black tracking-tight text-primary uppercase leading-tight">The Hillridge International School</p>
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">IB Academic Planner</p>
                     </div>
                   </SheetTitle>
                 </SheetHeader>
