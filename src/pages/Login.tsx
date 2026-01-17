@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { LogIn, ArrowRight } from "lucide-react";
+import { setAuthenticated } from "@/lib/demoStorage";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const Login = () => {
     // Simulate login
     setTimeout(() => {
       setIsLoading(false);
+      setAuthenticated(true);
       navigate("/classes");
     }, 800);
   };

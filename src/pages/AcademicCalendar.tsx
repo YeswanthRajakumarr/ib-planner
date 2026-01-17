@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
     Calendar as CalendarIcon,
     ChevronLeft,
@@ -13,8 +13,16 @@ import {
     MapPin,
     AlertCircle,
     GraduationCap,
-    CalendarDays
+    CalendarDays,
+    Filter
 } from "lucide-react";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 interface Event {
     id: string;
@@ -33,6 +41,7 @@ interface Holiday {
 
 const AcademicCalendar = () => {
     const [date, setDate] = useState<Date | undefined>(new Date());
+    const [eventTypeFilter, setEventTypeFilter] = useState<string>("all");
 
     // Holidays data for Jan, Feb, Mar 2026
     const holidays: Holiday[] = [
@@ -69,13 +78,18 @@ const AcademicCalendar = () => {
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const currentMonthHolidays = getHolidaysForMonth(date);
 
-    const events: Event[] = [
+    const events: Event[] = useMemo(() => [
         { id: "1", title: "Term 1 Start", date: new Date(2024, 5, 3), type: "academic", location: "Main Hall" },
         { id: "2", title: "Staff Professional Development", date: new Date(2024, 5, 7), type: "academic" },
         { id: "3", title: "Diagnostic Assessments", date: new Date(2024, 5, 12), type: "exam" },
         { id: "4", title: "Summer Integration Week", date: new Date(2024, 5, 20), type: "academic" },
         { id: "5", title: "Public Holiday", date: new Date(2024, 6, 17), type: "holiday" },
-    ];
+    ], []);
+
+    const filteredEvents = useMemo(() => {
+        if (eventTypeFilter === "all") return events;
+        return events.filter(e => e.type === eventTypeFilter);
+    }, [events, eventTypeFilter]);
 
     const getBadgeColor = (type: string) => {
         switch (type) {
@@ -97,9 +111,26 @@ const AcademicCalendar = () => {
                         <p className={theme.typography.pageDescription}>Key milestones for the 2024-25 session.</p>
                     </div>
 
-                    <div className={`flex items-center gap-2 bg-primary/5 px-3 py-1.5 ${theme.radius.sm} border border-primary/10`}>
-                        <CalendarDays className="w-4 h-4 text-primary" />
-                        <span className={theme.typography.labelSm}>Term 1 (2024)</span>
+                    <div className="flex items-center gap-3">
+                        <Select value={eventTypeFilter} onValueChange={setEventTypeFilter}>
+                            <SelectTrigger className="w-[140px] h-9 rounded-lg border-border/50 bg-card shadow-sm text-xs font-semibold">
+                                <div className="flex items-center gap-2">
+                                    <Filter className="w-3.5 h-3.5 text-muted-foreground" />
+                                    <SelectValue placeholder="All Events" />
+                                </div>
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Events</SelectItem>
+                                <SelectItem value="academic">Academic</SelectItem>
+                                <SelectItem value="holiday">Holiday</SelectItem>
+                                <SelectItem value="exam">Exam</SelectItem>
+                            </SelectContent>
+                        </Select>
+
+                        <div className={`flex items-center gap-2 bg-primary/5 px-3 py-1.5 ${theme.radius.sm} border border-primary/10`}>
+                            <CalendarDays className="w-4 h-4 text-primary" />
+                            <span className={theme.typography.labelSm}>Term 1 (2024)</span>
+                        </div>
                     </div>
                 </div>
 
@@ -176,7 +207,7 @@ const AcademicCalendar = () => {
                             </CardHeader>
                             <CardContent className="px-4 pb-4">
                                 <div className="space-y-2">
-                                    {events.map((event) => (
+                                    {filteredEvents.length > 0 ? filteredEvents.map((event) => (
                                         <div
                                             key={event.id}
                                             className="group flex items-center justify-between gap-3 p-3 rounded-xl bg-muted/20 border border-border/30 hover:bg-muted/40 transition-all cursor-pointer"
@@ -204,7 +235,9 @@ const AcademicCalendar = () => {
                                                 {event.type}
                                             </Badge>
                                         </div>
-                                    ))}
+                                    )) : (
+                                        <p className="text-sm text-muted-foreground text-center py-10">No events found for this category.</p>
+                                    )}
                                 </div>
                             </CardContent>
                         </Card>

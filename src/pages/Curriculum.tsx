@@ -19,29 +19,72 @@ import {
     BookOpen,
     Edit3,
     BarChart3,
-    SearchX
+    SearchX,
+    ChevronDown,
+    SortAsc
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Curriculum = () => {
     const navigate = useNavigate();
-    const classes = getClasses();
     const [search, setSearch] = useState("");
+    const [gradeFilter, setGradeFilter] = useState("all");
+    const [statusFilter, setStatusFilter] = useState("all");
+    const [sortBy, setSortBy] = useState("name-asc");
+    const classes = getClasses();
 
     // Flatten all subjects into a single list
-    const allSubjects = classes.flatMap(cls =>
+    const allSubjects = useMemo(() => classes.flatMap(cls =>
         cls.subjects.map(sub => ({
             ...sub,
             className: cls.name,
             grade: cls.grade,
             classId: cls.id
         }))
-    );
+    ), [classes]);
 
-    const filteredSubjects = allSubjects.filter(sub =>
-        sub.name.toLowerCase().includes(search.toLowerCase()) ||
-        sub.className.toLowerCase().includes(search.toLowerCase())
-    );
+    const filteredSubjects = useMemo(() => {
+        let result = allSubjects.filter(sub =>
+            sub.name.toLowerCase().includes(search.toLowerCase()) ||
+            sub.className.toLowerCase().includes(search.toLowerCase())
+        );
+
+        if (gradeFilter !== "all") {
+            result = result.filter(sub => sub.grade === gradeFilter);
+        }
+
+        if (statusFilter !== "all") {
+            const filterVal = statusFilter === "not_started" ? undefined : statusFilter;
+            result = result.filter(sub => sub.planStatus === filterVal);
+        }
+
+        result.sort((a, b) => {
+            if (sortBy === "name-asc") return a.name.localeCompare(b.name);
+            if (sortBy === "name-desc") return b.name.localeCompare(a.name);
+            if (sortBy === "progress-desc") return (b.completionPercentage || 0) - (a.completionPercentage || 0);
+            if (sortBy === "progress-asc") return (a.completionPercentage || 0) - (b.completionPercentage || 0);
+            return 0;
+        });
+
+        return result;
+    }, [allSubjects, search, gradeFilter, statusFilter, sortBy]);
+
+    const grades = useMemo(() => Array.from(new Set(allSubjects.map(s => s.grade))).sort(), [allSubjects]);
 
     const getStatusBadge = (status?: string) => {
         switch (status) {
@@ -65,19 +108,71 @@ const Curriculum = () => {
                         <p className={theme.typography.pageDescription}>All subjects and planning statuses across Grade 5-12.</p>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                        <div className="relative w-full md:w-64">
+                    <div className="flex flex-wrap items-center gap-2">
+                        <div className="relative w-full md:w-48">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                             <Input
-                                placeholder="Search subjects..."
+                                placeholder="Search..."
                                 className="pl-9 h-9 rounded-lg border-border/50 bg-card shadow-sm text-sm"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                             />
                         </div>
-                        <Button variant="outline" size="sm" className="h-9 w-9 rounded-lg p-0 border-border/50 bg-card shadow-sm">
-                            <Filter className="w-4 h-4" />
-                        </Button>
+
+                        <Select value={gradeFilter} onValueChange={setGradeFilter}>
+                            <SelectTrigger className="w-full md:w-[130px] h-9 rounded-lg border-border/50 bg-card shadow-sm text-xs font-semibold">
+                                <SelectValue placeholder="Grade" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Grades</SelectItem>
+                                {grades.map(grade => (
+                                    <SelectItem key={grade} value={grade}>{grade}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+
+                        <Select value={statusFilter} onValueChange={setStatusFilter}>
+                            <SelectTrigger className="w-full md:w-[130px] h-9 rounded-lg border-border/50 bg-card shadow-sm text-xs font-semibold">
+                                <SelectValue placeholder="Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Status</SelectItem>
+                                <SelectItem value="published">Published</SelectItem>
+                                <SelectItem value="draft">Draft</SelectItem>
+                                <SelectItem value="not_started">Not Started</SelectItem>
+                            </SelectContent>
+                        </Select>
+
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" size="sm" className="h-9 rounded-lg border-border/50 bg-card shadow-sm px-3 flex items-center gap-2">
+                                    <SortAsc className="w-3.5 h-3.5 text-primary" />
+                                    <span className="text-xs font-semibold">Sort</span>
+                                    <ChevronDown className="w-3.5 h-3.5 opacity-50" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-[180px] rounded-xl">
+                                <DropdownMenuLabel className="text-[10px] uppercase tracking-widest text-muted-foreground">Order By</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={() => setSortBy("name-asc")} className="flex justify-between items-center py-2 cursor-pointer text-xs font-medium">
+                                    <span>Subject (A-Z)</span>
+                                    {sortBy === "name-asc" && <div className="w-1.5 h-1.5 rounded-full bg-primary" />}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => setSortBy("name-desc")} className="flex justify-between items-center py-2 cursor-pointer text-xs font-medium">
+                                    <span>Subject (Z-A)</span>
+                                    {sortBy === "name-desc" && <div className="w-1.5 h-1.5 rounded-full bg-primary" />}
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={() => setSortBy("progress-desc")} className="flex justify-between items-center py-2 cursor-pointer text-xs font-medium">
+                                    <span>Progress (High)</span>
+                                    {sortBy === "progress-desc" && <div className="w-1.5 h-1.5 rounded-full bg-primary" />}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => setSortBy("progress-asc")} className="flex justify-between items-center py-2 cursor-pointer text-xs font-medium">
+                                    <span>Progress (Low)</span>
+                                    {sortBy === "progress-asc" && <div className="w-1.5 h-1.5 rounded-full bg-primary" />}
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </div>
 

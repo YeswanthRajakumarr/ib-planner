@@ -25,49 +25,90 @@ import {
     Target
 } from "lucide-react";
 
+import { useState, useMemo } from "react";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { Filter } from "lucide-react";
+
 const Analytics = () => {
     const classes = getClasses();
+    const [gradeFilter, setGradeFilter] = useState("all");
+
+    const filteredClasses = useMemo(() => {
+        if (gradeFilter === "all") return classes;
+        return classes.filter(cls => cls.grade === gradeFilter);
+    }, [classes, gradeFilter]);
+
+    const grades = useMemo(() => Array.from(new Set(classes.map(c => c.grade))).sort(), [classes]);
 
     // Data preparation for Completion by Grade
-    const gradeData = classes.map(cls => ({
+    const gradeData = useMemo(() => filteredClasses.map(cls => ({
         name: cls.name,
         completion: Math.round(
             cls.subjects.reduce((acc, sub) => acc + (sub.completionPercentage || 0), 0) /
             cls.subjects.length
         )
-    }));
+    })), [filteredClasses]);
 
     // Data preparation for Status distribution
-    const allSubjects = classes.flatMap(c => c.subjects);
-    const statusData = [
+    const allSubjects = useMemo(() => filteredClasses.flatMap(c => c.subjects), [filteredClasses]);
+
+    const statusData = useMemo(() => [
         { name: 'Published', value: allSubjects.filter(s => s.planStatus === 'published').length, color: chartColors.success },
         { name: 'Draft', value: allSubjects.filter(s => s.planStatus === 'draft').length, color: chartColors.warning },
         { name: 'Not Started', value: allSubjects.filter(s => !s.planStatus).length, color: chartColors.muted },
-    ];
+    ], [allSubjects]);
 
     // Data for Subject Category completion (MOCK categories for demo)
-    const categoryData = [
+    const categoryData = useMemo(() => [
         { category: 'Languages', completion: 65, fill: chartColors.primary },
         { category: 'Math', completion: 45, fill: chartColors.blue },
         { category: 'Sciences', completion: 25, fill: chartColors.cyan },
         { category: 'Arts & Design', completion: 15, fill: chartColors.purple },
-    ];
+    ], []);
 
-    const totalClasses = classes.length;
+    const totalClasses = filteredClasses.length;
     const totalSubjects = allSubjects.length;
     const publishedCount = statusData[0].value;
-    const avgCompletion = Math.round(
-        allSubjects.reduce((acc, s) => acc + (s.completionPercentage || 0), 0) / totalSubjects
-    );
+    const avgCompletion = useMemo(() => {
+        if (totalSubjects === 0) return 0;
+        return Math.round(
+            allSubjects.reduce((acc, s) => acc + (s.completionPercentage || 0), 0) / totalSubjects
+        );
+    }, [allSubjects, totalSubjects]);
 
     return (
         <div className="min-h-screen bg-background flex flex-col">
             <AppHeader />
 
             <main className={`flex-grow ${theme.spacing.page.maxWidth} ${theme.spacing.page.padding}`}>
-                <div className={`${theme.spacing.header.titleSpacing} ${theme.spacing.section.marginBottom}`}>
-                    <h1 className={theme.typography.pageTitle}>Institutional Analytics</h1>
-                    <p className={theme.typography.pageDescription}>Strategic overview of curriculum planning and coverage.</p>
+                <div className={`flex flex-col md:flex-row md:items-center justify-between ${theme.spacing.section.marginBottom}`}>
+                    <div className={theme.spacing.header.titleSpacing}>
+                        <h1 className={theme.typography.pageTitle}>Institutional Analytics</h1>
+                        <p className={theme.typography.pageDescription}>Strategic overview of curriculum planning and coverage.</p>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                        <Select value={gradeFilter} onValueChange={setGradeFilter}>
+                            <SelectTrigger className="w-[140px] h-10 rounded-xl border-border/50 bg-card/50 shadow-sm transition-all focus:ring-primary/20 text-xs font-bold uppercase tracking-wider">
+                                <div className="flex items-center gap-2">
+                                    <Filter className="w-3.5 h-3.5 text-primary" />
+                                    <SelectValue placeholder="All Grades" />
+                                </div>
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Grades</SelectItem>
+                                {grades.map(grade => (
+                                    <SelectItem key={grade} value={grade}>{grade}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </div>
 
                 {/* Metric Cards */}

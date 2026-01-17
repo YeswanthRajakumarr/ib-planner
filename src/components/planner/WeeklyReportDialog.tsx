@@ -35,7 +35,7 @@ interface WeekReport {
 interface WeeklyReportDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  className: string;
+  className?: string;
   subjectName: string;
 }
 
@@ -206,15 +206,14 @@ export const WeeklyReportDialog = ({
                 <button
                   key={week.id}
                   onClick={() => setCurrentWeekIndex(index)}
-                  className={`w-8 h-8 rounded-full text-xs font-medium transition-colors ${
-                    index === currentWeekIndex
+                  className={`w-8 h-8 rounded-full text-xs font-medium transition-colors ${index === currentWeekIndex
                       ? "bg-primary text-primary-foreground"
                       : getWeekProgress(week.id) === 100
-                      ? "bg-primary/20 text-primary border border-primary/30"
-                      : getWeekProgress(week.id) > 0
-                      ? "bg-muted text-foreground border border-border"
-                      : "bg-muted text-muted-foreground"
-                  }`}
+                        ? "bg-primary/20 text-primary border border-primary/30"
+                        : getWeekProgress(week.id) > 0
+                          ? "bg-muted text-foreground border border-border"
+                          : "bg-muted text-muted-foreground"
+                    }`}
                 >
                   {week.week}
                 </button>
@@ -291,19 +290,17 @@ export const WeeklyReportDialog = ({
                       >
                         <div className="flex items-center gap-2 mb-1">
                           <Calendar className="w-4 h-4 text-muted-foreground" />
-                          <span className={`text-sm font-medium ${
-                            currentReport.activitiesCompleted
+                          <span className={`text-sm font-medium ${currentReport.activitiesCompleted
                               ? "text-muted-foreground line-through"
                               : "text-foreground"
-                          }`}>
+                            }`}>
                             Activities
                           </span>
                         </div>
-                        <p className={`text-sm ${
-                          currentReport.activitiesCompleted
+                        <p className={`text-sm ${currentReport.activitiesCompleted
                             ? "text-muted-foreground"
                             : "text-foreground"
-                        }`}>
+                          }`}>
                           {currentWeek.activities || "No activities defined"}
                         </p>
                       </label>
@@ -330,19 +327,17 @@ export const WeeklyReportDialog = ({
                         >
                           <div className="flex items-center gap-2 mb-1">
                             <ClipboardCheck className="w-4 h-4 text-muted-foreground" />
-                            <span className={`text-sm font-medium ${
-                              currentReport.assessmentsCompleted
+                            <span className={`text-sm font-medium ${currentReport.assessmentsCompleted
                                 ? "text-muted-foreground line-through"
                                 : "text-foreground"
-                            }`}>
+                              }`}>
                               Assessment
                             </span>
                           </div>
-                          <p className={`text-sm ${
-                            currentReport.assessmentsCompleted
+                          <p className={`text-sm ${currentReport.assessmentsCompleted
                               ? "text-muted-foreground"
                               : "text-foreground"
-                          }`}>
+                            }`}>
                             {currentWeek.assessments}
                           </p>
                         </label>

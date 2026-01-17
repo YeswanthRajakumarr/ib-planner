@@ -3,6 +3,16 @@ import { ClassData, Subject, classesData } from "@/data/mockData";
 const STORAGE_KEY = "ib_planner_demo_data";
 const PLANNING_DATA_KEY = "ib_planner_demo_planning";
 const PLAN_METADATA_KEY = "ib_planner_demo_metadata";
+const AUTH_KEY = "ib_planner_authenticated";
+
+// Auth State
+export const isAuthenticated = (): boolean => {
+    return localStorage.getItem(AUTH_KEY) === "true";
+};
+
+export const setAuthenticated = (status: boolean) => {
+    localStorage.setItem(AUTH_KEY, status.toString());
+};
 
 // Classes & Subjects State
 export const getClasses = (): ClassData[] => {
