@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, GripVertical, Sparkles, Check, X, Link, Loader2, Layout } from "lucide-react";
 import { useAISuggestions } from "@/hooks/useAISuggestions";
 
-import { getPlanningData, savePlanningData } from "@/lib/demoStorage";
+import { fetchPlanningData, savePlanningData } from "@/lib/demoStorage";
 
 const availableTopics = [
   "Nouns and Pronouns",
@@ -44,27 +44,31 @@ interface ProcessSectionProps {
 }
 
 export const ProcessSection = ({ month, subjectId }: ProcessSectionProps) => {
-  const [steps, setSteps] = useState<ProcessStep[]>(() => {
-    const saved = getPlanningData(subjectId || 'default', month);
-    if (saved && saved.process) {
-      return saved.process;
-    }
-
-    if (subjectId && ['1a', '2a', '3a'].includes(subjectId)) {
-      return JSON.parse(JSON.stringify(englishSteps));
-    }
-    return [];
-  });
-
+  const [steps, setSteps] = useState<ProcessStep[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [newStep, setNewStep] = useState("");
   const [newStepTopic, setNewStepTopic] = useState<string>("");
   const { suggestions, isLoading, generateSuggestions, clearSuggestions } = useAISuggestions<string>();
 
   useEffect(() => {
-    if (subjectId) {
+    const loadData = async () => {
+      if (!subjectId) return;
+      const saved = await fetchPlanningData(subjectId, month);
+      if (saved && saved.process) {
+        setSteps(saved.process);
+      } else if (['1a', '2a', '3a'].includes(subjectId)) {
+        setSteps(JSON.parse(JSON.stringify(englishSteps)));
+      }
+      setIsLoaded(true);
+    };
+    loadData();
+  }, [subjectId, month]);
+
+  useEffect(() => {
+    if (subjectId && isLoaded) {
       savePlanningData(subjectId, month, "process", steps);
     }
-  }, [steps, month, subjectId]);
+  }, [steps, month, subjectId, isLoaded]);
 
   // ... rest of the existing functions (handleAddStep, handleUpdateTopic, etc.) ...
   const handleAddStep = () => {

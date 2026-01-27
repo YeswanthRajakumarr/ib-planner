@@ -41,7 +41,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { getClasses } from "@/lib/demoStorage";
+import { fetchClasses } from "@/lib/demoStorage";
 import { ClassData } from "@/data/mockData";
 
 const ClassList = () => {
@@ -54,10 +54,14 @@ const ClassList = () => {
   const [sortBy, setSortBy] = useState<string>("name-asc");
 
   useEffect(() => {
-    const data = getClasses();
-    setAllClasses(data);
-    setFilteredClasses(data);
+    const loadClasses = async () => {
+      const data = await fetchClasses();
+      setAllClasses(data);
+      setFilteredClasses(data);
+    };
+    loadClasses();
   }, []);
+
 
   useEffect(() => {
     let result = [...allClasses];

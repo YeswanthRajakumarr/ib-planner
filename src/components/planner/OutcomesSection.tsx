@@ -12,7 +12,7 @@ interface Outcome {
   isAiGenerated?: boolean;
 }
 
-import { getPlanningData, savePlanningData } from "@/lib/demoStorage";
+import { fetchPlanningData, savePlanningData } from "@/lib/demoStorage";
 
 interface Outcome {
   id: string;
@@ -33,26 +33,30 @@ interface OutcomesSectionProps {
 }
 
 export const OutcomesSection = ({ month, subjectId }: OutcomesSectionProps) => {
-  const [outcomes, setOutcomes] = useState<Outcome[]>(() => {
-    const saved = getPlanningData(subjectId || 'default', month);
-    if (saved && saved.outcomes) {
-      return saved.outcomes;
-    }
-
-    if (subjectId && ['1a', '2a', '3a'].includes(subjectId)) {
-      return JSON.parse(JSON.stringify(englishOutcomes));
-    }
-    return [];
-  });
-
+  const [outcomes, setOutcomes] = useState<Outcome[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [newOutcome, setNewOutcome] = useState("");
   const { suggestions, isLoading, generateSuggestions, clearSuggestions } = useAISuggestions<string>();
 
   useEffect(() => {
-    if (subjectId) {
+    const loadData = async () => {
+      if (!subjectId) return;
+      const saved = await fetchPlanningData(subjectId, month);
+      if (saved && saved.outcomes) {
+        setOutcomes(saved.outcomes);
+      } else if (['1a', '2a', '3a'].includes(subjectId)) {
+        setOutcomes(JSON.parse(JSON.stringify(englishOutcomes)));
+      }
+      setIsLoaded(true);
+    };
+    loadData();
+  }, [subjectId, month]);
+
+  useEffect(() => {
+    if (subjectId && isLoaded) {
       savePlanningData(subjectId, month, "outcomes", outcomes);
     }
-  }, [outcomes, month, subjectId]);
+  }, [outcomes, month, subjectId, isLoaded]);
 
   // ... rest of existing functions ...
   const handleAddOutcome = () => {

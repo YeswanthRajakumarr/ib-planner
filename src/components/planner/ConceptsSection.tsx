@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, X, Link2, Layout } from "lucide-react";
 import { EmptyState } from "@/components/ui/empty-state";
 
-import { getPlanningData, savePlanningData } from "@/lib/demoStorage";
+import { fetchPlanningData, savePlanningData } from "@/lib/demoStorage";
 
 interface Topic {
   id: string;
@@ -45,27 +45,32 @@ interface ConceptsSectionProps {
 }
 
 export const ConceptsSection = ({ month, subjectId }: ConceptsSectionProps) => {
-  const [concepts, setConcepts] = useState<Concept[]>(() => {
-    const saved = getPlanningData(subjectId || 'default', month);
-    if (saved && saved.concepts) {
-      return saved.concepts;
-    }
-
-    if (subjectId && ['1a', '2a', '3a'].includes(subjectId)) {
-      return JSON.parse(JSON.stringify(englishConcepts));
-    }
-
-    return [];
-  });
-
+  const [concepts, setConcepts] = useState<Concept[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [newConceptName, setNewConceptName] = useState("");
   const [newTopicInputs, setNewTopicInputs] = useState<Record<string, string>>({});
 
+  // Load initial data
   useEffect(() => {
-    if (subjectId) {
+    const loadData = async () => {
+      if (!subjectId) return;
+      const saved = await fetchPlanningData(subjectId, month);
+      if (saved && saved.concepts) {
+        setConcepts(saved.concepts);
+      } else if (['1a', '2a', '3a'].includes(subjectId)) {
+        setConcepts(JSON.parse(JSON.stringify(englishConcepts)));
+      }
+      setIsLoaded(true);
+    };
+    loadData();
+  }, [subjectId, month]);
+
+  // Save data when concepts change
+  useEffect(() => {
+    if (subjectId && isLoaded) {
       savePlanningData(subjectId, month, "concepts", concepts);
     }
-  }, [concepts, month, subjectId]);
+  }, [concepts, month, subjectId, isLoaded]);
 
   const handleAddConcept = () => {
     if (!newConceptName.trim()) return;

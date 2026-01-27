@@ -11,7 +11,7 @@ import { OutcomesSection } from "@/components/planner/OutcomesSection";
 import { AssessmentSection } from "@/components/planner/AssessmentSection";
 import { WeeklyPlanSection } from "@/components/planner/WeeklyPlanSection";
 import { toast } from "@/hooks/use-toast";
-import { updateSubjectStatus, getClasses, getMonthsCompleted, saveMonthCompleted } from "@/lib/demoStorage";
+import { updateSubjectStatus, fetchClasses, fetchMonthsCompleted, saveMonthCompleted } from "@/lib/demoStorage";
 import { theme } from "@/lib/theme";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -32,15 +32,28 @@ const MonthlyPlanner = () => {
   const classId = searchParams.get("class") || "";
   const subjectId = searchParams.get("subject") || "";
 
-  const classes = getClasses();
-  const selectedClass = classes.find(c => c.id === classId);
-  const selectedSubject = selectedClass?.subjects.find(s => s.id === subjectId);
-
+  const [selectedClass, setSelectedClass] = useState<any>(null);
+  const [selectedSubject, setSelectedSubject] = useState<any>(null);
   const [currentMonthIndex, setCurrentMonthIndex] = useState(0);
-  const [planStatus, setPlanStatus] = useState<"draft" | "published">(selectedSubject?.planStatus || "draft");
-  const [monthsCompleted, setMonthsCompleted] = useState<number[]>(() =>
-    subjectId ? getMonthsCompleted(subjectId) : []
-  );
+  const [planStatus, setPlanStatus] = useState<"draft" | "published">("draft");
+  const [monthsCompleted, setMonthsCompleted] = useState<number[]>([]);
+
+  useEffect(() => {
+    const loadData = async () => {
+      const classes = await fetchClasses();
+      const foundClass = classes.find(c => c.id === classId);
+      const foundSubject = foundClass?.subjects.find(s => s.id === subjectId);
+      setSelectedClass(foundClass);
+      setSelectedSubject(foundSubject);
+      setPlanStatus(foundSubject?.planStatus || "draft");
+
+      if (subjectId) {
+        const completed = await fetchMonthsCompleted(subjectId);
+        setMonthsCompleted(completed);
+      }
+    };
+    loadData();
+  }, [classId, subjectId]);
 
   const handlePrevMonth = () => {
     if (currentMonthIndex > 0) {
@@ -54,14 +67,14 @@ const MonthlyPlanner = () => {
     }
   };
 
-  const handleSaveDraft = () => {
-    if (subjectId) {
+  const handleSaveDraft = async () => {
+    if (subjectId && classId) {
       const isNew = !monthsCompleted.includes(currentMonthIndex);
       const currentCompleted = isNew ? [...monthsCompleted, currentMonthIndex] : monthsCompleted;
       const completion = Math.round((currentCompleted.length / months.length) * 100);
 
-      updateSubjectStatus(subjectId, "draft", completion);
-      saveMonthCompleted(subjectId, currentMonthIndex);
+      await updateSubjectStatus(classId, subjectId, "draft", completion);
+      await saveMonthCompleted(subjectId, currentMonthIndex);
       if (isNew) setMonthsCompleted(currentCompleted);
     }
     toast({
@@ -70,7 +83,7 @@ const MonthlyPlanner = () => {
     });
   };
 
-  const handlePublish = () => {
+  const handlePublish = async () => {
     if (monthsCompleted.length < months.length) {
       // For demo purposes, we can allow partial publish but warn
       toast({
@@ -79,8 +92,8 @@ const MonthlyPlanner = () => {
       });
     }
 
-    if (subjectId) {
-      updateSubjectStatus(subjectId, "published", 100);
+    if (subjectId && classId) {
+      await updateSubjectStatus(classId, subjectId, "published", 100);
     }
 
     setPlanStatus("published");
@@ -89,6 +102,7 @@ const MonthlyPlanner = () => {
       description: "Your academic plan has been published successfully.",
     });
   };
+
 
   // Keyboard shortcuts
   useEffect(() => {

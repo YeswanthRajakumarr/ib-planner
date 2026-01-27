@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, FileText, PenTool, BookOpen, X, Link, Sparkles, Loader2 } from "lucide-react";
 import { useAISuggestions } from "@/hooks/useAISuggestions";
 
-import { getPlanningData, savePlanningData } from "@/lib/demoStorage";
+import { fetchPlanningData, savePlanningData } from "@/lib/demoStorage";
 
 interface Assessment {
   id: string;
@@ -48,18 +48,8 @@ interface AssessmentSectionProps {
 }
 
 export const AssessmentSection = ({ month, subjectId }: AssessmentSectionProps) => {
-  const [selectedAssessments, setSelectedAssessments] = useState<Assessment[]>(() => {
-    const saved = getPlanningData(subjectId || 'default', month);
-    if (saved && saved.assessment) {
-      return saved.assessment;
-    }
-
-    if (subjectId && ['1a', '2a', '3a'].includes(subjectId)) {
-      return JSON.parse(JSON.stringify(englishAssessments));
-    }
-    return [];
-  });
-
+  const [selectedAssessments, setSelectedAssessments] = useState<Assessment[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [showCustomForm, setShowCustomForm] = useState(false);
   const [customTitle, setCustomTitle] = useState("");
   const [customConcept, setCustomConcept] = useState("");
@@ -68,10 +58,24 @@ export const AssessmentSection = ({ month, subjectId }: AssessmentSectionProps) 
   const { suggestions, isLoading, generateSuggestions, clearSuggestions } = useAISuggestions<AISuggestion>();
 
   useEffect(() => {
-    if (subjectId) {
+    const loadData = async () => {
+      if (!subjectId) return;
+      const saved = await fetchPlanningData(subjectId, month);
+      if (saved && saved.assessment) {
+        setSelectedAssessments(saved.assessment);
+      } else if (['1a', '2a', '3a'].includes(subjectId)) {
+        setSelectedAssessments(JSON.parse(JSON.stringify(englishAssessments)));
+      }
+      setIsLoaded(true);
+    };
+    loadData();
+  }, [subjectId, month]);
+
+  useEffect(() => {
+    if (subjectId && isLoaded) {
       savePlanningData(subjectId, month, "assessment", selectedAssessments);
     }
-  }, [selectedAssessments, month, subjectId]);
+  }, [selectedAssessments, month, subjectId, isLoaded]);
 
   // ... existing helper functions ...
   const getCategoryIcon = (category: string) => {
